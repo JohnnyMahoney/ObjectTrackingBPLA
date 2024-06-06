@@ -2,7 +2,7 @@ import cv2
 
 
 class VideoCaptureHandler:
-    def __init__(self, video_source='videoDron4.MP4', scale=0.5):
+    def __init__(self, video_source='videoDron2.MP4', scale=0.5):
         self.video = cv2.VideoCapture(video_source)
         self.scale = scale
 
