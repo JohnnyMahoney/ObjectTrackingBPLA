@@ -13,6 +13,7 @@ class Main:
         self.tracker: ObjectTracker = ObjectTracker()
         self.ui: UserInterface = UserInterface()
         self.scale = self.video_handler.scale
+        self.last_sent_time = 0
 
     def run(self):
         self.mavlink_connection.connect()
@@ -32,6 +33,12 @@ class Main:
                 bbox_coords = self.tracker.update(frame_resized, self.scale)
                 if bbox_coords:
                     cv2.rectangle(frame, bbox_coords[0], bbox_coords[1], (0, 255, 0), 2, 1)
+
+                    current_time = time.time()
+                    if current_time - self.last_sent_time >= 1:
+                        self.mavlink_connection.send_data(bbox_coords)
+                        self.last_sent_time = current_time
+
                 if self.tracker.object_lost:
                     if self.ui.object_lost_time == 0:
                         self.ui.object_lost_time = time.time()
